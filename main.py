@@ -16,7 +16,9 @@ if place:
 
     if option == "Temperature":
         # Create a temperature plot
-        temperature = [dict["main"]["temp"] for dict in filtered_data]
+        temp = [dict["main"]["temp"] for dict in filtered_data]
+        temp1 = [x/10 for x in temp]
+        temperature = [round(num, 2) for num in temp1]
         dates = [dict["dt_txt"] for dict in filtered_data]
         figure = px.line(x=dates, y=temperature,
                          labels={'x': 'Date', 'y': 'Temperature(C)'})

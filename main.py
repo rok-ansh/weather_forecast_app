@@ -10,26 +10,31 @@ days = st.slider("Forecast Days", min_value=1, max_value=5,
 option = st.selectbox("Select data to view", ("Temperature", "Sky"))
 st.subheader(f"{option} for the next {days} days in {place}")
 
-if place:
-    # Get the temperature/sky data
-    filtered_data = get_data(place, days)
+try:
+    if place:
+        # Get the temperature/sky data
+        filtered_data = get_data(place, days)
 
-    if option == "Temperature":
-        # Create a temperature plot
-        temp = [dict["main"]["temp"] for dict in filtered_data]
-        temp1 = [x/10 for x in temp]
-        temperature = [round(num, 2) for num in temp1]
-        dates = [dict["dt_txt"] for dict in filtered_data]
-        figure = px.line(x=dates, y=temperature,
-                         labels={'x': 'Date', 'y': 'Temperature(C)'})
-        st.plotly_chart(figure)
+        if option == "Temperature":
+            # Create a temperature plot
+            temp = [dict["main"]["temp"] for dict in filtered_data]
+            temp1 = [x / 10 for x in temp]
+            temperature = [round(num, 2) for num in temp1]
+            dates = [dict["dt_txt"] for dict in filtered_data]
+            figure = px.line(x=dates, y=temperature,
+                             labels={'x': 'Date', 'y': 'Temperature(C)'})
+            st.plotly_chart(figure)
 
-    if option == "Sky":
-        images = {"Clear": "images/clear.png", "Clouds": "images/cloud.png",
-                  "Rain": "images/rain.png", "Snow": "images/snow.png"}
-        sky_conditions = [dict["weather"][0]["main"] for dict in filtered_data]
-        image_path = [images[condition] for condition in sky_conditions]
-        print(sky_conditions)
+        if option == "Sky":
+            images = {"Clear": "images/clear.png",
+                      "Clouds": "images/cloud.png",
+                      "Rain": "images/rain.png", "Snow": "images/snow.png"}
+            sky_conditions = [dict["weather"][0]["main"] for dict in
+                              filtered_data]
+            image_path = [images[condition] for condition in sky_conditions]
+            print(sky_conditions)
 
-        st.image(image_path, width= 150)
+            st.image(image_path, width=150)
 
+except KeyError:
+    st.info(f"Entered {place} is invalid, please type a valid place!")
